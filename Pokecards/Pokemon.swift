@@ -24,7 +24,15 @@ struct PokemonDetail: Decodable {
     var stats: [Stat]
     
     struct Sprite : Decodable{
-        var frontDefault: URL
+        var other: OtherSprites
+        
+        struct OtherSprites : Decodable {
+            var home: HomeSprites
+            
+            struct HomeSprites : Decodable {
+                var frontDefault: URL
+            }
+        }
     }
     
     struct Stat : Decodable {

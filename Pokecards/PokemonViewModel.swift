@@ -22,7 +22,7 @@ class PokemonViewModel : ObservableObject{
         for index in 0..<pokemonDetails.count {
             let currentPokemon = pokemonBaseInfos.results[index]
             let currentPokemonDetails = pokemonDetails[index]
-            let newPokemon = Pokemon(id: currentPokemonDetails.id, name: currentPokemon.name, imageUrl: currentPokemonDetails.sprites.frontDefault, hp: currentPokemonDetails.stats[PokeConstants.hpIndex].baseStat, attack: currentPokemonDetails.stats[PokeConstants.attackIndex].baseStat, defense: currentPokemonDetails.stats[PokeConstants.defenseIndex].baseStat)
+            let newPokemon = Pokemon(id: currentPokemonDetails.id, name: currentPokemon.name, imageUrl: currentPokemonDetails.sprites.other.home.frontDefault, hp: currentPokemonDetails.stats[PokeConstants.hpIndex].baseStat, attack: currentPokemonDetails.stats[PokeConstants.attackIndex].baseStat, defense: currentPokemonDetails.stats[PokeConstants.defenseIndex].baseStat)
             result.append(newPokemon)
         }
         return result
@@ -68,11 +68,9 @@ extension PokemonViewModel {
                 if let response = try? decoder.decode(PokemonDetail.self, from: data) {
                     DispatchQueue.main.async { [weak self] in
                         self?.pokemonDetails.append(response)
-                        
                         if (self?.pokemonDetails.count == self?.pokemonBaseInfos.results.count) {
                             self?.pokemons = self?.createPokemons() ?? []
                         }
-                        
                     }
                 }
             }

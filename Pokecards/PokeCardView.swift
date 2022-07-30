@@ -11,7 +11,7 @@ struct PokeCardView: View {
     var pokemon: Pokemon
     var body: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: 30)
+            RoundedRectangle(cornerRadius: 50)
                 .fill(.white)
             
             VStack(alignment: .leading) {
@@ -23,11 +23,12 @@ struct PokeCardView: View {
                 Spacer()
                 AsyncImage(url: pokemon.imageUrl) {image in
                     image.resizable()
-                        .aspectRatio(contentMode: .fit)
+                        .scaledToFit()
                 } placeholder: {
                     ProgressView()
                 }
-                .frame(width: 300, height: 300, alignment: .center)
+                .frame(width:  200, height: 200, alignment: .center)
+                .clipped()
                 .frame(maxWidth: .infinity)
                 Spacer()
                 HStack(alignment: .center) {
@@ -36,6 +37,7 @@ struct PokeCardView: View {
                     StatView(statName: "defense", amount: pokemon.defense)
                     
                 }
+                .padding()
                 .padding()
             }
         }
@@ -60,6 +62,9 @@ struct StatView : View {
 
 struct PokeCardView_Previews: PreviewProvider {
     static var previews: some View {
-        PokeCardView(pokemon: Pokemon(id: 1, name: "Bulbasaur", imageUrl: URL(string: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/14.png")! , hp: 33, attack: 33, defense: 33))
+        PokeCardView(pokemon: Pokemon(id: 1, name: "Bulbasaur", imageUrl: URL(string: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/1.png")! , hp: 33, attack: 33, defense: 33))
+            .previewInterfaceOrientation(.landscapeLeft)
+//            .previewInterfaceOrientation(.landscapeLeft)
+            
     }
 }

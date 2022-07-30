@@ -27,8 +27,9 @@ struct ContentView: View {
             .padding()
             .padding(.top)
 
-            PokeCardView(pokemon: Pokemon(id: 1, name: "Bulbasaur", imageUrl: URL(string: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png")! , hp: 33, attack: 33, defense: 33))
-                .frame(width: 300, height: 400)
+            PokeCardView(pokemon: Pokemon(id: 1, name: "Bulbasaur", imageUrl: URL(string: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/1.png")! , hp: 33, attack: 33, defense: 33))
+                .frame(width:   300, height: 500)
+                
         }
     }
 }
@@ -47,7 +48,13 @@ struct RestartButtonView: View {
                 .frame(width: 50, height: 50)
             Image(systemName: "arrow.clockwise")
                 .foregroundColor(.indigo.opacity(0.7))
-                .font(Font.system(size: 25, weight: .heavy))
+                .font(Font.system(size: 25, weight: .black))
         }
+    }
+}
+
+extension UIDevice {
+    static var isIpad: Bool {
+        UIDevice.current.userInterfaceIdiom == .pad
     }
 }

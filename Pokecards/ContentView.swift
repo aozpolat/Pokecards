@@ -10,10 +10,19 @@ import SwiftUI
 struct ContentView: View {
     @ObservedObject var pokemonVM = PokemonViewModel()
     var body: some View {
-        List(pokemonVM.pokemons.results, id: \.url) { item in
-            VStack{
-                Text(item.name)
+        ScrollView {
+            ForEach(pokemonVM.pokemons) { item in
+                
+                VStack{
+                    HStack{
+                        Text(String(item.id))
+                        AsyncImage(url: item.imageUrl)
+                    }
+                    
+                }
             }
+            
+           
         }
     }
 }

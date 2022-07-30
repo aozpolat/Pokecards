@@ -22,19 +22,17 @@ class PokemonViewModel : ObservableObject{
         for index in 0..<pokemonDetails.count {
             let currentPokemon = pokemonBaseInfos.results[index]
             let currentPokemonDetails = pokemonDetails[index]
-            let newPokemon = Pokemon(id: currentPokemonDetails.id, name: currentPokemon.name, imageUrl: currentPokemonDetails.sprites.frontDefault, hp: currentPokemonDetails.stats[0].baseStat, attack: currentPokemonDetails.stats[1].baseStat, defense: currentPokemonDetails.stats[2].baseStat)
+            let newPokemon = Pokemon(id: currentPokemonDetails.id, name: currentPokemon.name, imageUrl: currentPokemonDetails.sprites.frontDefault, hp: currentPokemonDetails.stats[PokeConstants.hpIndex].baseStat, attack: currentPokemonDetails.stats[PokeConstants.attackIndex].baseStat, defense: currentPokemonDetails.stats[PokeConstants.defenseIndex].baseStat)
             result.append(newPokemon)
         }
-        
         return result
-
     }
 }
 
 
 extension PokemonViewModel {
     func fetchPokemons() {
-        guard let url = URL(string: "https://pokeapi.co/api/v2/pokemon/") else {
+        guard let url = URL(string: PokeConstants.pokeApiUrl) else {
             print("url error")
             return;
         }
@@ -46,18 +44,14 @@ extension PokemonViewModel {
                 if let response = try? JSONDecoder().decode(PokemonBaseInfos.self, from: data) {
                     DispatchQueue.main.async { [weak self] in
                         self?.pokemonBaseInfos = response
-                        
-                        
                         self?.pokemonBaseInfos.results.forEach { pokemonBaseInfo in
                             self?.fetchPokemonDetails(url:pokemonBaseInfo.url.absoluteString)
                         }
-                        
                     }
                 }
             }
         }.resume()
     }
-    
     
     func fetchPokemonDetails(url : String) {
         guard let url = URL(string: url) else {
@@ -84,4 +78,12 @@ extension PokemonViewModel {
             }
         }.resume()
     }
+}
+
+// index of the stats that I use
+struct PokeConstants {
+    static var pokeApiUrl = "https://pokeapi.co/api/v2/pokemon/"
+    static var hpIndex = 0
+    static var attackIndex = 1
+    static var defenseIndex = 2
 }

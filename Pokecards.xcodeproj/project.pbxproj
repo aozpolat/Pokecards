@@ -13,6 +13,7 @@
 		4121AEBB28946A3200A89121 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4121AEBA28946A3200A89121 /* Preview Assets.xcassets */; };
 		4121AEC42895060500A89121 /* Pokemon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4121AEC32895060500A89121 /* Pokemon.swift */; };
 		4121AEC62895067D00A89121 /* PokemonViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4121AEC52895067D00A89121 /* PokemonViewModel.swift */; };
+		4121AEC8289533E200A89121 /* PokeCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4121AEC7289533E200A89121 /* PokeCardView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,6 +24,7 @@
 		4121AEBA28946A3200A89121 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		4121AEC32895060500A89121 /* Pokemon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pokemon.swift; sourceTree = "<group>"; };
 		4121AEC52895067D00A89121 /* PokemonViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonViewModel.swift; sourceTree = "<group>"; };
+		4121AEC7289533E200A89121 /* PokeCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokeCardView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +59,7 @@
 			children = (
 				4121AEB328946A3000A89121 /* PokecardsApp.swift */,
 				4121AEB528946A3000A89121 /* ContentView.swift */,
+				4121AEC7289533E200A89121 /* PokeCardView.swift */,
 				4121AEC32895060500A89121 /* Pokemon.swift */,
 				4121AEC52895067D00A89121 /* PokemonViewModel.swift */,
 				4121AEB728946A3200A89121 /* Assets.xcassets */,
@@ -147,6 +150,7 @@
 				4121AEB428946A3000A89121 /* PokecardsApp.swift in Sources */,
 				4121AEC62895067D00A89121 /* PokemonViewModel.swift in Sources */,
 				4121AEC42895060500A89121 /* Pokemon.swift in Sources */,
+				4121AEC8289533E200A89121 /* PokeCardView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

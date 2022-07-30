@@ -27,9 +27,13 @@ struct ContentView: View {
             .padding()
             .padding(.top)
 
-            PokeCardView(pokemon: Pokemon(id: 1, name: "Bulbasaur", imageUrl: URL(string: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/1.png")! , hp: 33, attack: 33, defense: 33))
-                .frame(width:   300, height: 500)
+            ZStack {
+                RoundedRectangle(cornerRadius: 50)
+                    .fill(.white)
                 
+                PokeCardContentView(pokemon: Pokemon(id: 1, name: "Bulbasaur", imageUrl: URL(string: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/1.png")! , hp: 33, attack: 33, defense: 33))
+            }
+                .frame(width:   300, height: 500) 
         }
     }
 }

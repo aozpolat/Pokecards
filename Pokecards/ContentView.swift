@@ -8,9 +8,13 @@
 import SwiftUI
 
 struct ContentView: View {
+    @ObservedObject var pokemonVM = PokemonViewModel()
     var body: some View {
-        Text("Hello, world!")
-            .padding()
+        List(pokemonVM.pokemons.results, id: \.url) { item in
+            VStack{
+                Text(item.name)
+            }
+        }
     }
 }
 

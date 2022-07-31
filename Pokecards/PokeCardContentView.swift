@@ -25,9 +25,8 @@ struct PokeCardContentView: View {
                 } else {
                     ProgressView()
                 }
-                
             }
-            .frame(width:  200, height: 200, alignment: .center)
+            .frame(width: PokeConstants.imageSize, height: PokeConstants.imageSize, alignment: .center)
             .frame(maxWidth: .infinity)
             
             Spacer()

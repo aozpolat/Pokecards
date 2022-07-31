@@ -28,24 +28,27 @@ struct ContentView: View {
             .padding()
             .padding(.top)
             
+            Group {
                 if (pokemonVM.loading) {
                     ZStack {
-                        RoundedRectangle(cornerRadius: 50)
+                        RoundedRectangle(cornerRadius: PokeConstants.cornerRadius)
                             .fill(.white)
                         Text("Loading...")
                             .font(.title2)
                     }
-                    .frame(width: 300, height: 480)
+                    
                 } else {
                     PokeCardContentView(pokemon: pokemonVM.pokemons[pokemonVM.frontIndex])
                         .flippable(isFront: pokemonVM.isFront, direction: pokemonVM.directions[pokemonVM.index], pokemon: pokemonVM.pokemons[pokemonVM.backIndex])
-                        .frame(width: 300, height: 480)
                         .onTapGesture {
-                            withAnimation() {
+                            withAnimation(.easeInOut(duration: PokeConstants.animationTime)) {
                                 pokemonVM.flipCard()
                             }
                         }
                 }
+            }
+            .frame(width: PokeConstants.cardWidth, height: PokeConstants.cardHeight)
+                
         }
     }
     
@@ -64,10 +67,10 @@ struct RestartButtonView: View {
         ZStack {
             Circle()
                 .fill(.white)
-                .frame(width: 50, height: 50)
+                .frame(width: PokeConstants.refreshButtonCircleSize, height: PokeConstants.refreshButtonCircleSize)
             Image(systemName: "arrow.clockwise")
                 .foregroundColor(loading ? PokeConstants.refreshButtonColorLoading : PokeConstants.backgroundColor)
-                .font(Font.system(size: 25, weight: .black))
+                .font(Font.system(size: PokeConstants.refreshButtonSize, weight: .black))
         }
     }
 }

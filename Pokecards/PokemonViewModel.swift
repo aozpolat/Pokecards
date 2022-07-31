@@ -31,7 +31,7 @@ class PokemonViewModel : ObservableObject{
         if (!cardTapped) {
             cardTapped = true;
             isFront.toggle()
-            Timer.scheduledTimer(withTimeInterval: 0.6, repeats: false) { [weak self] _ in
+            Timer.scheduledTimer(withTimeInterval: PokeConstants.animationTime, repeats: false) { [weak self] _ in
                 guard let self = self else { return }
                 self.index = ( self.index + 1 ) % (self.directions.count)
                 if (self.isFront) {

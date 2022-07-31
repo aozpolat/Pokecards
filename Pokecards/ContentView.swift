@@ -9,12 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     @ObservedObject var pokemonVM = PokemonViewModel()
-    @State private var isFront = false
-    @State private var index = 0
-    @State private var frontIndex = 0
-    @State private var backIndex = 1
-    @State private var clicked = false
-    let directions: [[(CGFloat, CGFloat, CGFloat)]] = [[(1,0,0.2),(1,0, 0.1), (1,0,0)],[(0,-2,-0.1), (0,-2, -0.1),(0,-1,0)]]
+    
     var body: some View {
         ZStack {
             PokeConstants.backgroundColor
@@ -32,7 +27,6 @@ struct ContentView: View {
             }
             .padding()
             .padding(.top)
-
             
                 if (pokemonVM.loading) {
                     ZStack {
@@ -41,26 +35,14 @@ struct ContentView: View {
                         Text("Loading...")
                             .font(.title2)
                     }
-                    .frame(width: 600, height: 480)
+                    .frame(width: 300, height: 480)
                 } else {
-                    PokeCardContentView(pokemon: pokemonVM.pokemons[frontIndex])
-                        .flippable(isFront: isFront, direction: directions[index], pokemon: pokemonVM.pokemons[backIndex])
-                        .frame(width: 600, height: 480)
+                    PokeCardContentView(pokemon: pokemonVM.pokemons[pokemonVM.frontIndex])
+                        .flippable(isFront: pokemonVM.isFront, direction: pokemonVM.directions[pokemonVM.index], pokemon: pokemonVM.pokemons[pokemonVM.backIndex])
+                        .frame(width: 300, height: 480)
                         .onTapGesture {
-                            if (!clicked) {
-                                clicked = true;
-                                withAnimation(.easeInOut(duration: 0.6)) {
-                                    isFront.toggle()
-                                }
-                                Timer.scheduledTimer(withTimeInterval: 0.6, repeats: false) {_ in
-                                    index = ( index + 1 ) % directions.count
-                                    if (isFront) {
-                                        frontIndex = ( frontIndex + 2 ) % pokemonVM.pokemons.count
-                                    } else {
-                                        backIndex = ( backIndex + 2 ) % pokemonVM.pokemons.count
-                                    }
-                                    clicked = false
-                                }
+                            withAnimation() {
+                                pokemonVM.flipCard()
                             }
                         }
                 }
@@ -89,3 +71,4 @@ struct RestartButtonView: View {
         }
     }
 }
+

@@ -27,7 +27,7 @@ struct PokeCardContentView: View {
                 }
                 
             }
-            .frame(width:  300, height: 300, alignment: .center)
+            .frame(width:  200, height: 200, alignment: .center)
             .frame(maxWidth: .infinity)
             
             Spacer()

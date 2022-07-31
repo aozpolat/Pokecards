@@ -43,7 +43,10 @@ class PokemonViewModel : ObservableObject{
             }
         }
     }
- 
+    
+    func restart() {
+        frontIndex = 0; backIndex = 1; isFront = false; index = 0
+    }
 }
 
 

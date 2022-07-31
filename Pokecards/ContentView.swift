@@ -17,7 +17,7 @@ struct ContentView: View {
             VStack{
                 HStack{
                     Button {
-                        
+                        pokemonVM.restart()
                     } label: {
                         RestartButtonView(loading: pokemonVM.loading)
                     }

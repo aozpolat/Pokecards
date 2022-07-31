@@ -9,6 +9,12 @@ import SwiftUI
 
 struct ContentView: View {
     @ObservedObject var pokemonVM = PokemonViewModel()
+    @State private var isFront = false
+    @State private var index = 0
+    @State private var frontIndex = 0
+    @State private var backIndex = 1
+    @State private var clicked = false
+    let directions: [[(CGFloat, CGFloat, CGFloat)]] = [[(1,0,0.2),(1,0, 0.1), (1,0,0)],[(0,-2,-0.1), (0,-2, -0.1),(0,-1,0)]]
     var body: some View {
         ZStack {
             PokeConstants.backgroundColor
@@ -26,16 +32,36 @@ struct ContentView: View {
             .padding()
             .padding(.top)
 
-            ZStack {
-                RoundedRectangle(cornerRadius: 50)
-                    .fill(.white)
+            
                 if (pokemonVM.loading) {
-                    Text("Loading")
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 50)
+                            .fill(.white)
+                        Text("Loading")
+                    }
+                    .frame(width:   600, height: 500)
                 } else {
-                    PokeCardContentView(pokemon: pokemonVM.pokemons[0])
+                    PokeCardContentView(pokemon: pokemonVM.pokemons[frontIndex])
+                        .flippable(isFront: isFront, direction: directions[index], pokemon: pokemonVM.pokemons[backIndex])
+                        .frame(width:   600, height: 500)
+                        .onTapGesture {
+                            if (!clicked) {
+                                clicked = true;
+                                withAnimation(.easeInOut(duration: 0.6)) {
+                                    isFront.toggle()
+                                }
+                                Timer.scheduledTimer(withTimeInterval: 0.6, repeats: false) {_ in
+                                    index = ( index + 1 ) % directions.count
+                                    if (isFront) {
+                                        frontIndex = ( frontIndex + 2 ) % pokemonVM.pokemons.count
+                                    } else {
+                                        backIndex = ( backIndex + 2 ) % pokemonVM.pokemons.count
+                                    }
+                                    clicked = false
+                                }
+                            }
+                        }
                 }
-            }
-                .frame(width:   300, height: 500) 
         }
     }
 }

@@ -16,6 +16,7 @@
 		4121AECA289572A900A89121 /* PokeCardContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4121AEC9289572A900A89121 /* PokeCardContentView.swift */; };
 		4132E162289684220026567E /* PokeConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4132E161289684220026567E /* PokeConstants.swift */; };
 		4132E164289684C30026567E /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4132E163289684C30026567E /* Extensions.swift */; };
+		4132E166289687D70026567E /* FlippableCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4132E165289687D70026567E /* FlippableCard.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +30,7 @@
 		4121AEC9289572A900A89121 /* PokeCardContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokeCardContentView.swift; sourceTree = "<group>"; };
 		4132E161289684220026567E /* PokeConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokeConstants.swift; sourceTree = "<group>"; };
 		4132E163289684C30026567E /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		4132E165289687D70026567E /* FlippableCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlippableCard.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +65,7 @@
 			children = (
 				4121AEB328946A3000A89121 /* PokecardsApp.swift */,
 				4121AEB528946A3000A89121 /* ContentView.swift */,
+				4132E165289687D70026567E /* FlippableCard.swift */,
 				4121AEC9289572A900A89121 /* PokeCardContentView.swift */,
 				4121AEC32895060500A89121 /* Pokemon.swift */,
 				4121AEC52895067D00A89121 /* PokemonViewModel.swift */,
@@ -159,6 +162,7 @@
 				4121AEC62895067D00A89121 /* PokemonViewModel.swift in Sources */,
 				4121AEC42895060500A89121 /* Pokemon.swift in Sources */,
 				4132E164289684C30026567E /* Extensions.swift in Sources */,
+				4132E166289687D70026567E /* FlippableCard.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

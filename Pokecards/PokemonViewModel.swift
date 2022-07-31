@@ -6,26 +6,38 @@
 //
 
 import Foundation
+import UIKit
 
 class PokemonViewModel : ObservableObject{
     @Published var pokemons: [Pokemon] = []
-    
+    @Published var loading = true
     var pokemonBaseInfos = PokemonBaseInfos(results: [])
     var pokemonDetails: [PokemonDetail] = []
-    
     init () {
         fetchPokemons()
     }
     
-    func createPokemons() -> [Pokemon] {
-        var result: [Pokemon] = []
-        for index in 0..<pokemonDetails.count {
-            let currentPokemon = pokemonBaseInfos.results[index]
-            let currentPokemonDetails = pokemonDetails[index]
-            let newPokemon = Pokemon(id: currentPokemonDetails.id, name: currentPokemon.name, imageUrl: currentPokemonDetails.sprites.other.home.frontDefault, hp: currentPokemonDetails.stats[PokeConstants.hpIndex].baseStat, attack: currentPokemonDetails.stats[PokeConstants.attackIndex].baseStat, defense: currentPokemonDetails.stats[PokeConstants.defenseIndex].baseStat)
-            result.append(newPokemon)
+    let dispatchQueue = DispatchQueue(label: "imageQueue", qos: .background)
+    let semaphore = DispatchSemaphore(value: 0)
+    
+    func createPokemons() {
+          dispatchQueue.async { [weak self] in
+            for index in 0..<5 {
+                let currentPokemon = self?.pokemonBaseInfos.results[index]
+                let currentPokemonDetails = self?.pokemonDetails[index]
+                
+                self?.fetchPokemonImage(from: currentPokemonDetails?.sprites.other.home.frontDefault.absoluteString ??  "") { data in
+                    print(" \(currentPokemonDetails!.id) image")
+                    let newPokemon = Pokemon(id: currentPokemonDetails!.id, name: currentPokemon!.name, image: data, hp: currentPokemonDetails!.stats[PokeConstants.hpIndex].baseStat, attack: currentPokemonDetails!.stats[PokeConstants.attackIndex].baseStat, defense: currentPokemonDetails!.stats[PokeConstants.defenseIndex].baseStat)
+                    self?.pokemons.append(newPokemon)
+                    if (self?.pokemons.count == 5) {
+                        self?.loading = false
+                    }
+                    self?.semaphore.signal()
+                }
+                self?.semaphore.wait()
+            }
         }
-        return result
     }
 }
 
@@ -68,20 +80,31 @@ extension PokemonViewModel {
                 if let response = try? decoder.decode(PokemonDetail.self, from: data) {
                     DispatchQueue.main.async { [weak self] in
                         self?.pokemonDetails.append(response)
+                        print(response.id)
                         if (self?.pokemonDetails.count == self?.pokemonBaseInfos.results.count) {
-                            self?.pokemons = self?.createPokemons() ?? []
+                            print("done details")
+                            self?.createPokemons()
                         }
                     }
                 }
             }
         }.resume()
     }
+    
+    func fetchPokemonImage(from url: String, completion: @escaping (_ :Data) -> Void) {
+        guard let url = URL(string: url) else {
+            print("url error")
+            return;
+        }
+        
+        URLSession.shared.dataTask(with: url) { data, res, err in
+            if let data = data {
+                DispatchQueue.main.async {
+                      completion(data)
+                }
+            }
+        }.resume()
+    }
 }
 
-// index of the stats that I use
-struct PokeConstants {
-    static var pokeApiUrl = "https://pokeapi.co/api/v2/pokemon/"
-    static var hpIndex = 0
-    static var attackIndex = 1
-    static var defenseIndex = 2
-}
+

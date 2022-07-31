@@ -8,17 +8,16 @@
 import SwiftUI
 
 struct ContentView: View {
-//    @ObservedObject var pokemonVM = PokemonViewModel()
+    @ObservedObject var pokemonVM = PokemonViewModel()
     var body: some View {
         ZStack {
-            Color.indigo
-                .opacity(0.7)
+            PokeConstants.backgroundColor
                 .ignoresSafeArea()
             VStack{
                 HStack{
                     Button {
                     } label: {
-                        RestartButtonView()
+                        RestartButtonView(loading: pokemonVM.loading)
                     }
                     Spacer()
                 }
@@ -30,8 +29,11 @@ struct ContentView: View {
             ZStack {
                 RoundedRectangle(cornerRadius: 50)
                     .fill(.white)
-                
-                PokeCardContentView(pokemon: Pokemon(id: 1, name: "Bulbasaur", imageUrl: URL(string: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/1.png")! , hp: 33, attack: 33, defense: 33))
+                if (pokemonVM.loading) {
+                    Text("Loading")
+                } else {
+                    PokeCardContentView(pokemon: pokemonVM.pokemons[0])
+                }
             }
                 .frame(width:   300, height: 500) 
         }
@@ -45,20 +47,15 @@ struct ContentView_Previews: PreviewProvider {
 }
 
 struct RestartButtonView: View {
+    var loading: Bool
     var body: some View {
         ZStack {
             Circle()
                 .fill(.white)
                 .frame(width: 50, height: 50)
             Image(systemName: "arrow.clockwise")
-                .foregroundColor(.indigo.opacity(0.7))
+                .foregroundColor(loading ? PokeConstants.refreshButtonColorLoading : PokeConstants.backgroundColor)
                 .font(Font.system(size: 25, weight: .black))
         }
-    }
-}
-
-extension UIDevice {
-    static var isIpad: Bool {
-        UIDevice.current.userInterfaceIdiom == .pad
     }
 }

@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+import UIKit
 struct PokeCardContentView: View {
     var pokemon: Pokemon
     var body: some View {
@@ -17,15 +17,18 @@ struct PokeCardContentView: View {
                 .frame(maxWidth: .infinity, alignment: .center)
                 .padding()
             Spacer()
-            AsyncImage(url: pokemon.imageUrl) {image in
-                image.resizable()
-                    .scaledToFit()
-            } placeholder: {
-                ProgressView()
+            Group {
+                if let uiImage = UIImage(data: pokemon.image) {
+                    Image(uiImage: uiImage)
+                        .resizable()
+                } else {
+                    ProgressView()
+                }
+                
             }
             .frame(width:  200, height: 200, alignment: .center)
-            .clipped()
             .frame(maxWidth: .infinity)
+            
             Spacer()
             HStack(alignment: .center) {
                 StatView(statName: "hp", amount: pokemon.hp)
@@ -55,8 +58,8 @@ struct StatView : View {
     
 }
 
-struct PokeCardContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        PokeCardContentView(pokemon: Pokemon(id: 1, name: "Bulbasaur", imageUrl: URL(string: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/1.png")! , hp: 33, attack: 33, defense: 33))
-    }
-}
+//struct PokeCardContentView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        PokeCardContentView(pokemon: Pokemon(id: 1, name: "Bulbasaur", imageUrl: URL(string: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/1.png")! , hp: 33, attack: 33, defense: 33))
+//    }
+//}

@@ -49,7 +49,7 @@ struct PokemonDetail: Decodable {
 struct Pokemon: Identifiable {
     let id: Int
     var name: String
-    var imageUrl: URL
+    var image: Data
     var hp: Int
     var attack: Int
     var defense: Int

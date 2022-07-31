@@ -22,6 +22,7 @@ struct ContentView: View {
             VStack{
                 HStack{
                     Button {
+                        
                     } label: {
                         RestartButtonView(loading: pokemonVM.loading)
                     }
@@ -37,13 +38,14 @@ struct ContentView: View {
                     ZStack {
                         RoundedRectangle(cornerRadius: 50)
                             .fill(.white)
-                        Text("Loading")
+                        Text("Loading...")
+                            .font(.title2)
                     }
-                    .frame(width:   600, height: 500)
+                    .frame(width: 600, height: 480)
                 } else {
                     PokeCardContentView(pokemon: pokemonVM.pokemons[frontIndex])
                         .flippable(isFront: isFront, direction: directions[index], pokemon: pokemonVM.pokemons[backIndex])
-                        .frame(width:   600, height: 500)
+                        .frame(width: 600, height: 480)
                         .onTapGesture {
                             if (!clicked) {
                                 clicked = true;
@@ -64,6 +66,8 @@ struct ContentView: View {
                 }
         }
     }
+    
+    
 }
 
 struct ContentView_Previews: PreviewProvider {

@@ -21,23 +21,25 @@ class PokemonViewModel : ObservableObject{
     let semaphore = DispatchSemaphore(value: 0)
     
     func createPokemons() {
-          dispatchQueue.async { [weak self] in
-            for index in 0..<5 {
-                let currentPokemon = self?.pokemonBaseInfos.results[index]
-                let currentPokemonDetails = self?.pokemonDetails[index]
+        for index in 0..<self.pokemonDetails.count {
+                let currentPokemon = pokemonBaseInfos.results[index]
+                let currentPokemonDetails = pokemonDetails[index]
                 
-                self?.fetchPokemonImage(from: currentPokemonDetails?.sprites.other.home.frontDefault.absoluteString ??  "") { data in
-                    print(" \(currentPokemonDetails!.id) image")
-                    let newPokemon = Pokemon(id: currentPokemonDetails!.id, name: currentPokemon!.name, image: data, hp: currentPokemonDetails!.stats[PokeConstants.hpIndex].baseStat, attack: currentPokemonDetails!.stats[PokeConstants.attackIndex].baseStat, defense: currentPokemonDetails!.stats[PokeConstants.defenseIndex].baseStat)
-                    self?.pokemons.append(newPokemon)
-                    if (self?.pokemons.count == 5) {
-                        self?.loading = false
+                fetchPokemonImage(from: currentPokemonDetails.sprites.other.home.frontDefault.absoluteString) { data in
+                    print(" \(currentPokemonDetails.id) image")
+                    let newPokemon = Pokemon(id: currentPokemonDetails.id, name: currentPokemon.name, image: data, hp: currentPokemonDetails.stats[PokeConstants.hpIndex].baseStat, attack: currentPokemonDetails.stats[PokeConstants.attackIndex].baseStat, defense: currentPokemonDetails.stats[PokeConstants.defenseIndex].baseStat)
+                    self.pokemons.append(newPokemon)
+//                    if (currentPokemonDetails.id == 1) {
+//                        self.pokemons = self.pokemons.sorted { $0.id < $1.id }
+//                        self.loading = false
+//                    }
+                    if (self.pokemons.count == self.pokemonDetails.count) {
+                        
+                        self.pokemons = self.pokemons.sorted { $0.id < $1.id }
+                        self.loading = false
                     }
-                    self?.semaphore.signal()
                 }
-                self?.semaphore.wait()
-            }
-        }
+            }   
     }
 }
 
@@ -83,6 +85,7 @@ extension PokemonViewModel {
                         print(response.id)
                         if (self?.pokemonDetails.count == self?.pokemonBaseInfos.results.count) {
                             print("done details")
+                            self?.pokemonDetails = self?.pokemonDetails.sorted { $0.id < $1.id} ?? []
                             self?.createPokemons()
                         }
                     }

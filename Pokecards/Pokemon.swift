@@ -7,12 +7,11 @@
 
 import Foundation
 
-//name and url for details
+//url for details
 struct PokemonBaseInfos: Decodable {
     var results: [PokemonBaseInfo]
     
     struct PokemonBaseInfo: Decodable{
-        var name: String
         var url: URL
     }
 }
@@ -20,6 +19,7 @@ struct PokemonBaseInfos: Decodable {
 // Stat[0] -> hp, Stat[1] -> attack, Stat[2] -> defense
 struct PokemonDetail: Decodable {
     var id: Int
+    var name: String
     var sprites: Sprite
     var stats: [Stat]
     

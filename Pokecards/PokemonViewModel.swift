@@ -16,14 +16,16 @@ class PokemonViewModel : ObservableObject{
     @Published var frontIndex = 0
     @Published var backIndex = 1
     
-    private var pokemonBaseInfos = PokemonBaseInfos(results: [])
+    private var pokemonCount: Int?
     private var pokemonDetails: [PokemonDetail] = []
     private var cardTapped = false
-    let directions: [[(CGFloat, CGFloat, CGFloat)]] = [[(1,0,0.2),(1,0, 0.1), (1,0,0)],[(0,-2,-0.1), (0,-2, -0.1),(0,-1,0)]]
+    let directions: [[(CGFloat, CGFloat, CGFloat)]] = [[(1,0,0.2),(1,0,0.1), (1,0,0)],[(0,-2,-0.1), (0,-2, -0.1),(0,-1,0)]]
     
     init () {
         fetchPokemons()
     }
+    
+    
     
     // intents
     
@@ -67,8 +69,8 @@ extension PokemonViewModel {
             if let data = data {
                 if let response = try? JSONDecoder().decode(PokemonBaseInfos.self, from: data) {
                     DispatchQueue.main.async { [weak self] in
-                        self?.pokemonBaseInfos = response
-                        self?.pokemonBaseInfos.results.forEach { pokemonBaseInfo in
+                        self?.pokemonCount = response.results.count
+                        response.results.forEach { pokemonBaseInfo in
                             self?.fetchPokemonDetails(url:pokemonBaseInfo.url.absoluteString)
                         }
                     }
@@ -93,37 +95,28 @@ extension PokemonViewModel {
                     DispatchQueue.main.async { [weak self] in
                         self?.pokemonDetails.append(response)
                         print(response.id)
-                        if (self?.pokemonDetails.count == self?.pokemonBaseInfos.results.count) {
-                            print("done details")
-                            self?.pokemonDetails = self?.pokemonDetails.sorted { $0.id < $1.id} ?? []
-                            self?.createPokemons()
-                        }
+                        self?.createPokemons(for: response)
+//                        if (self?.pokemonDetails.count == self?.pokemonBaseInfos.results.count) {
+//                            print("done details")
+//                            self?.pokemonDetails = self?.pokemonDetails.sorted { $0.id < $1.id} ?? []
+//                            self?.createPokemons()
+//                        }
                     }
                 }
             }
         }.resume()
     }
     
-    func createPokemons() {
-        for index in 0..<self.pokemonDetails.count {
-                let currentPokemon = pokemonBaseInfos.results[index]
-                let currentPokemonDetails = pokemonDetails[index]
-                
-                fetchPokemonImage(from: currentPokemonDetails.sprites.other.home.frontDefault.absoluteString) { data in
-                    print(" \(currentPokemonDetails.id) image")
-                    let newPokemon = Pokemon(id: currentPokemonDetails.id, name: currentPokemon.name, image: data, hp: currentPokemonDetails.stats[PokeConstants.hpIndex].baseStat, attack: currentPokemonDetails.stats[PokeConstants.attackIndex].baseStat, defense: currentPokemonDetails.stats[PokeConstants.defenseIndex].baseStat)
-                    self.pokemons.append(newPokemon)
-//                    if (currentPokemonDetails.id == 1) {
-//                        self.pokemons = self.pokemons.sorted { $0.id < $1.id }
-//                        self.loading = false
-//                    }
-                    if (self.pokemons.count == self.pokemonDetails.count) {
-                        
-                        self.pokemons = self.pokemons.sorted { $0.id < $1.id }
-                        self.loading = false
-                    }
-                }
+    func createPokemons(for pokemonDetails: PokemonDetail) {
+        fetchPokemonImage(from: pokemonDetails.sprites.other.home.frontDefault.absoluteString) { data in
+            print(" \(pokemonDetails.id) image")
+            let newPokemon = Pokemon(id: pokemonDetails.id, name: pokemonDetails.name, image: data, hp: pokemonDetails.stats[PokeConstants.hpIndex].baseStat, attack: pokemonDetails.stats[PokeConstants.attackIndex].baseStat, defense: pokemonDetails.stats[PokeConstants.defenseIndex].baseStat)
+            self.pokemons.append(newPokemon)
+            if (self.pokemons.count == self.pokemonCount) { // finished
+                self.pokemons = self.pokemons.sorted { $0.id < $1.id }
+                self.loading = false
             }
+        }
     }
     
     func fetchPokemonImage(from url: String, completion: @escaping (_ :Data) -> Void) {

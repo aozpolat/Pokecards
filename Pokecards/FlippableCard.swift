@@ -14,7 +14,7 @@ struct FlippableCard: AnimatableModifier {
     private var direction:[(CGFloat, CGFloat, CGFloat)]
     private var pokemon: Pokemon
     init(isFront: Bool, direction:[(CGFloat, CGFloat, CGFloat)], pokemon: Pokemon) {
-        rotation = isFront ? 180 : 0
+        rotation = isFront ? 0 : 180
         self.direction = direction
         self.pokemon = pokemon
     }

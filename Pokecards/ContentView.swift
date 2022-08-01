@@ -38,7 +38,16 @@ struct ContentView: View {
                     }
                     
                 } else {
-                    PokeCardContentView(pokemon: pokemonVM.pokemons[pokemonVM.frontIndex])
+                    Group {
+                        if (pokemonVM.shouldFetch && pokemonVM.isFront) {
+                            Text("Loading..")
+                                .font(.title2)
+                        } else {
+                            PokeCardContentView(pokemon: pokemonVM.pokemons[pokemonVM.frontIndex])
+                        }
+                        
+                    }
+                    
                         .flippable(isFront: pokemonVM.isFront, direction: pokemonVM.directions[pokemonVM.index], pokemon: pokemonVM.pokemons[pokemonVM.backIndex])
                         .onTapGesture {
                             withAnimation(.easeInOut(duration: PokeConstants.animationTime)) {

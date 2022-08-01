@@ -75,7 +75,9 @@ class PokemonViewModel : ObservableObject{
     }
     
     func restart() {
-        frontIndex = 0; backIndex = 1; isFront = false; index = 0
+        frontIndex = 0; backIndex = 1; isFront = true; index = 0; loading = true; nextUrl = nil
+        pokemons = []; previousPokemons = []; shouldChangeSet = false; usePrevious = false
+        fetchPokemons()
     }
 }
 

@@ -39,13 +39,16 @@ class PokemonViewModel : ObservableObject{
             cardTapped = true;
             isFront.toggle()
             if (shouldChangeSet) {
-                
-                Timer.scheduledTimer(withTimeInterval: PokeConstants.animationTime / 2, repeats: false) { [weak self] _ in
-                    self?.usePrevious = false
-                    self?.shouldChangeSet = false
-                    self?.previousPokemons = [];
+                if (self.pokemons.count != self.pokemonCount) { //probably internet is slow
+                    // TODO
+                    print("cannot fetch new set")
+                } else {
+                    Timer.scheduledTimer(withTimeInterval: PokeConstants.animationTime / 2, repeats: false) { [weak self] _ in
+                        self?.usePrevious = false
+                        self?.shouldChangeSet = false
+                        self?.previousPokemons = [];
+                    }
                 }
-                
             }
             
             
@@ -58,7 +61,7 @@ class PokemonViewModel : ObservableObject{
                     
                     self.frontIndex = self.usePrevious ? ( self.frontIndex + 2 ) % self.previousPokemons.count : ( self.frontIndex + 2 ) % self.pokemons.count
                 } else {
-                    if (( self.backIndex + 2 ) % 15 == 0 && self.previousPokemons.isEmpty && self.nextUrl != nil ) {
+                    if (( self.backIndex + 2 ) % 13 == 0 && self.previousPokemons.isEmpty && self.nextUrl != nil ) {
                         print("here")
                         self.fetchNextSetOfPokemons()
                     }

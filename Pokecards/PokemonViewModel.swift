@@ -10,6 +10,7 @@ import UIKit
 
 class PokemonViewModel : ObservableObject{
     @Published var pokemons: [Pokemon] = []
+    @Published var previousPokemons: [Pokemon] = []
     @Published var loading = true
     @Published var isFront = true
     @Published var index = 0
@@ -17,10 +18,12 @@ class PokemonViewModel : ObservableObject{
     @Published var backIndex = 1
     
     private var pokemonCount: Int?
+//    private var pokemonDetails: [PokemonDetail] = []
     private var nextUrl: URL?
-    private var pokemonDetails: [PokemonDetail] = []
     private var cardTapped = false
-    @Published var shouldFetch = false
+//    @Published var shouldFetch = false
+    private var shouldChangeSet = false
+    @Published var usePrevious = false
     let directions: [[(CGFloat, CGFloat, CGFloat)]] = [[(1,0,0.2),(1,0,0.1), (1,0,0)],[(0,-2,-0.1), (0,-2, -0.1),(0,-1,0)]]
     
     init () {
@@ -35,21 +38,36 @@ class PokemonViewModel : ObservableObject{
         if (!cardTapped) {
             cardTapped = true;
             isFront.toggle()
+            if (shouldChangeSet) {
+                
+                Timer.scheduledTimer(withTimeInterval: PokeConstants.animationTime / 2, repeats: false) { [weak self] _ in
+                    self?.usePrevious = false
+                    self?.shouldChangeSet = false
+                    self?.previousPokemons = [];
+                }
+                
+            }
+            
+            
             
             Timer.scheduledTimer(withTimeInterval: PokeConstants.animationTime, repeats: false) { [weak self] _ in
                 guard let self = self else { return }
                 self.index = ( self.index + 1 ) % (self.directions.count)
                 if (!self.isFront) {
-                self.shouldFetch = (self.frontIndex + 2) % self.pokemons.count == 0 && self.nextUrl != nil
+                    self.shouldChangeSet = self.previousPokemons.count > 0 && ((self.frontIndex + 2) % self.previousPokemons.count ) == 0 // 20. pokemon is on the screen
                     
-                    self.frontIndex = ( self.frontIndex + 2 ) % self.pokemons.count
+                    self.frontIndex = self.usePrevious ? ( self.frontIndex + 2 ) % self.previousPokemons.count : ( self.frontIndex + 2 ) % self.pokemons.count
                 } else {
-                    self.backIndex = ( self.backIndex + 2 ) % self.pokemons.count
+                    if (( self.backIndex + 2 ) % 15 == 0 && self.previousPokemons.isEmpty && self.nextUrl != nil ) {
+                        print("here")
+                        self.fetchNextSetOfPokemons()
+                    }
+                    self.backIndex = self.usePrevious ? ( self.backIndex + 2 ) % self.previousPokemons.count : ( self.backIndex + 2 ) % self.pokemons.count
                 }
                 self.cardTapped = false
-                if (self.isFront && self.shouldFetch) {
-                    self.fetchNextSetOfPokemons()
-                }
+//                if (self.isFront && self.shouldFetch) {
+//                    self.fetchNextSetOfPokemons()
+//                }
             }
             
             
@@ -68,7 +86,6 @@ class PokemonViewModel : ObservableObject{
 
 extension PokemonViewModel {
     func fetchPokemons() {
-        loading = true
         guard let url = URL(string: nextUrl == nil ? PokeConstants.pokeApiUrl : nextUrl!.absoluteString) else {
             print("url error")
             return;
@@ -105,7 +122,7 @@ extension PokemonViewModel {
                 decoder.keyDecodingStrategy = .convertFromSnakeCase
                 if let response = try? decoder.decode(PokemonDetail.self, from: data) {
                     DispatchQueue.main.async { [weak self] in
-                        self?.pokemonDetails.append(response)
+//                        self?.pokemonDetails.append(response)
                         print(response.id)
                         self?.createPokemons(for: response)
 //                        if (self?.pokemonDetails.count == self?.pokemonBaseInfos.results.count) {
@@ -127,7 +144,7 @@ extension PokemonViewModel {
             if (self.pokemons.count == self.pokemonCount) { // finished
                 self.pokemons = self.pokemons.sorted { $0.id < $1.id }
                 self.loading = false
-                self.shouldFetch = false
+//                self.shouldFetch = false
             }
         }
     }
@@ -148,8 +165,10 @@ extension PokemonViewModel {
     }
     
     func fetchNextSetOfPokemons() {
-        loading = true; index = 0; frontIndex = 0; backIndex = 1
-        pokemonDetails = []; pokemons = []
+//        loading = true; index = 0; frontIndex = 0; backIndex = 1
+        self.previousPokemons = pokemons
+        self.usePrevious = true
+        pokemons = []
         fetchPokemons()
     }
     

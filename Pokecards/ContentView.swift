@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct ContentView: View {
-    @ObservedObject var pokemonVM = PokemonViewModel()
-    
+    @ObservedObject var pokemonVM: PokemonViewModel
+
     var body: some View {
         ZStack {
             PokeConstants.backgroundColor
@@ -57,7 +57,7 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        ContentView(pokemonVM: PokemonViewModel() )
     }
 }
 

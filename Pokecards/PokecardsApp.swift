@@ -9,9 +9,10 @@ import SwiftUI
 
 @main
 struct PokecardsApp: App {
+    @StateObject var pokemonVM = PokemonViewModel()
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(pokemonVM:  pokemonVM)
         }
     }
 }

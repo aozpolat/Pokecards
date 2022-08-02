@@ -7,7 +7,7 @@
 
 import Foundation
 
-//url for details
+//for general info like urls 
 struct PokemonBaseInfos: Decodable {
     var next: URL
     var results: [PokemonBaseInfo]

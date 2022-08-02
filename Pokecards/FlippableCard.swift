@@ -36,7 +36,7 @@ struct FlippableCard: AnimatableModifier {
         }
         .rotation3DEffect(
             Angle.degrees(rotation > 90 ? -180 + rotation : rotation),
-            axis: (rotation < 60 ? direction[0] : rotation < 120 ? direction[1] : direction[2]),
+            axis: (rotation < 60 ? direction[0] : rotation < 120 ? direction[1] : direction[2]), // I am using them like keyframes for animations
             perspective: 0.2
         )
     }

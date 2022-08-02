@@ -17,6 +17,7 @@
 		4132E162289684220026567E /* PokeConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4132E161289684220026567E /* PokeConstants.swift */; };
 		4132E164289684C30026567E /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4132E163289684C30026567E /* Extensions.swift */; };
 		4132E166289687D70026567E /* FlippableCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4132E165289687D70026567E /* FlippableCard.swift */; };
+		41BAE1B82899842600EF60AC /* PokeApiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41BAE1B72899842600EF60AC /* PokeApiService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +32,7 @@
 		4132E161289684220026567E /* PokeConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokeConstants.swift; sourceTree = "<group>"; };
 		4132E163289684C30026567E /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		4132E165289687D70026567E /* FlippableCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlippableCard.swift; sourceTree = "<group>"; };
+		41BAE1B72899842600EF60AC /* PokeApiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokeApiService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,6 +71,7 @@
 				4121AEC9289572A900A89121 /* PokeCardContentView.swift */,
 				4121AEC32895060500A89121 /* Pokemon.swift */,
 				4121AEC52895067D00A89121 /* PokemonViewModel.swift */,
+				41BAE1B72899842600EF60AC /* PokeApiService.swift */,
 				4132E161289684220026567E /* PokeConstants.swift */,
 				4132E163289684C30026567E /* Extensions.swift */,
 				4121AEB728946A3200A89121 /* Assets.xcassets */,
@@ -163,6 +166,7 @@
 				4121AEC42895060500A89121 /* Pokemon.swift in Sources */,
 				4132E164289684C30026567E /* Extensions.swift in Sources */,
 				4132E166289687D70026567E /* FlippableCard.swift in Sources */,
+				41BAE1B82899842600EF60AC /* PokeApiService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

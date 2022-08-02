@@ -16,18 +16,19 @@ class PokemonViewModel : ObservableObject{
     @Published var index = 0
     @Published var frontIndex = 0
     @Published var backIndex = 1
+    @Published var usePrevious = false
     
+    private var pokeApiService = PokeApiService()
     private var pokemonCount: Int?
-//    private var pokemonDetails: [PokemonDetail] = []
     private var nextUrl: URL?
     private var cardTapped = false
-//    @Published var shouldFetch = false
     private var shouldChangeSet = false
-    @Published var usePrevious = false
+    private var url: String {
+        nextUrl == nil ? PokeConstants.pokeApiUrl : nextUrl!.absoluteString
+    }
     let directions: [[(CGFloat, CGFloat, CGFloat)]] = [[(1,0,0.2),(1,0,0.1), (1,0,0)],[(0,-2,-0.1), (0,-2, -0.1),(0,-1,0)]]
-    
     init () {
-        fetchPokemons()
+        createPokemons()
     }
     
     
@@ -39,48 +40,45 @@ class PokemonViewModel : ObservableObject{
             cardTapped = true;
             isFront.toggle()
             if (shouldChangeSet) {
-                if (self.pokemons.count != self.pokemonCount) { //probably internet is slow
-                    // TODO
+                if (pokemons.isEmpty ||  self.pokemons.count != self.pokemonCount) { //probably internet is slow
                     print("cannot fetch new set")
+                    loading = true
+                    switchToNextSet()
                 } else {
                     Timer.scheduledTimer(withTimeInterval: PokeConstants.animationTime / 2, repeats: false) { [weak self] _ in
-                        self?.usePrevious = false
-                        self?.shouldChangeSet = false
-                        self?.previousPokemons = [];
+                        self?.switchToNextSet()
                     }
                 }
             }
-            
-            
-            
-            Timer.scheduledTimer(withTimeInterval: PokeConstants.animationTime, repeats: false) { [weak self] _ in
-                guard let self = self else { return }
-                self.index = ( self.index + 1 ) % (self.directions.count)
-                if (!self.isFront) {
-                    self.shouldChangeSet = self.previousPokemons.count > 0 && ((self.frontIndex + 2) % self.previousPokemons.count ) == 0 // 20. pokemon is on the screen
-                    
-                    self.frontIndex = self.usePrevious ? ( self.frontIndex + 2 ) % self.previousPokemons.count : ( self.frontIndex + 2 ) % self.pokemons.count
-                } else {
-                    if (( self.backIndex + 2 ) % 13 == 0 && self.previousPokemons.isEmpty && self.nextUrl != nil ) {
-                        print("here")
-                        self.fetchNextSetOfPokemons()
-                    }
-                    self.backIndex = self.usePrevious ? ( self.backIndex + 2 ) % self.previousPokemons.count : ( self.backIndex + 2 ) % self.pokemons.count
-                }
+            if (loading) {
+                backIndex = 1
                 self.cardTapped = false
-//                if (self.isFront && self.shouldFetch) {
-//                    self.fetchNextSetOfPokemons()
-//                }
+                self.index = ( self.index + 1 ) % (self.directions.count)
+            } else {
+                Timer.scheduledTimer(withTimeInterval: PokeConstants.animationTime, repeats: false) { [weak self] _ in
+                    guard let self = self else { return }
+                    self.index = ( self.index + 1 ) % (self.directions.count)
+                    if (!self.isFront) {
+                        self.shouldChangeSet = self.previousPokemons.count > 0 && ((self.frontIndex + 2) % self.previousPokemons.count ) == 0 // 20. pokemon is on the screen
+                        
+                        self.frontIndex = self.usePrevious ? ( self.frontIndex + 2 ) % self.previousPokemons.count : ( self.frontIndex + 2 ) % self.pokemonCount!
+                    } else {
+                        if (( self.backIndex + 2 ) % 15 == 0 && self.previousPokemons.isEmpty && self.nextUrl != nil ) {
+                            print("here")
+                            self.fetchNextSetOfPokemons()
+                        }
+                        self.backIndex = self.usePrevious ? ( self.backIndex + 2 ) % self.previousPokemons.count : ( self.backIndex + 2 ) % self.pokemonCount!
+                    }
+                    self.cardTapped = false
+                }
             }
-            
-            
         }
     }
-    
+ 
     func restart() {
         frontIndex = 0; backIndex = 1; isFront = true; index = 0; loading = true; nextUrl = nil
         pokemons = []; previousPokemons = []; shouldChangeSet = false; usePrevious = false
-        fetchPokemons()
+        createPokemons()
     }
 }
 
@@ -90,93 +88,42 @@ class PokemonViewModel : ObservableObject{
 
 
 extension PokemonViewModel {
-    func fetchPokemons() {
-        guard let url = URL(string: nextUrl == nil ? PokeConstants.pokeApiUrl : nextUrl!.absoluteString) else {
-            print("url error")
-            return;
-        }
-        
-        let request = URLRequest(url: url)
-        
-        URLSession.shared.dataTask(with: request) { data, res, err in
-            if let data = data {
-                if let response = try? JSONDecoder().decode(PokemonBaseInfos.self, from: data) {
-                    DispatchQueue.main.async { [weak self] in
-                        self?.pokemonCount = response.results.count
-                        self?.nextUrl = response.next
-                        response.results.forEach { pokemonBaseInfo in
-                            self?.fetchPokemonDetails(url:pokemonBaseInfo.url.absoluteString)
+    
+    func createPokemons() {
+        pokeApiService.fetchGeneric(from: self.url) { [weak self] (pokemonBaseInfos : PokemonBaseInfos) in
+            guard let self = self else {return}
+            
+            self.pokemonCount = pokemonBaseInfos.results.count
+            self.nextUrl = pokemonBaseInfos.next
+            pokemonBaseInfos.results.forEach { pokemonBaseInfo in
+                self.pokeApiService.fetchGeneric(from:pokemonBaseInfo.url.absoluteString) { (pokemonDetails : PokemonDetail) in
+                    print(pokemonDetails.id)
+                    self.pokeApiService.fetchPokemonImage(from: pokemonDetails.sprites.other.home.frontDefault.absoluteString) { imageData in
+                        print(" \(pokemonDetails.id) image")
+                        let newPokemon = Pokemon(id: pokemonDetails.id, name: pokemonDetails.name, image: imageData, hp: pokemonDetails.stats[PokeConstants.hpIndex].baseStat, attack: pokemonDetails.stats[PokeConstants.attackIndex].baseStat, defense: pokemonDetails.stats[PokeConstants.defenseIndex].baseStat)
+                        self.pokemons.append(newPokemon)
+                        if (self.pokemons.count == self.pokemonCount) { // finished
+                            self.pokemons = self.pokemons.sorted { $0.id < $1.id }
+                            self.loading = false
                         }
                     }
                 }
             }
-        }.resume()
-    }
-    
-    func fetchPokemonDetails(url : String) {
-        guard let url = URL(string: url) else {
-            print("url error")
-            return;
-        }
-        
-        let request = URLRequest(url: url)
-        
-        URLSession.shared.dataTask(with: request) { data, res, err in
-            if let data = data {
-                let decoder = JSONDecoder()
-                decoder.keyDecodingStrategy = .convertFromSnakeCase
-                if let response = try? decoder.decode(PokemonDetail.self, from: data) {
-                    DispatchQueue.main.async { [weak self] in
-//                        self?.pokemonDetails.append(response)
-                        print(response.id)
-                        self?.createPokemons(for: response)
-//                        if (self?.pokemonDetails.count == self?.pokemonBaseInfos.results.count) {
-//                            print("done details")
-//                            self?.pokemonDetails = self?.pokemonDetails.sorted { $0.id < $1.id} ?? []
-//                            self?.createPokemons()
-//                        }
-                    }
-                }
-            }
-        }.resume()
-    }
-    
-    func createPokemons(for pokemonDetails: PokemonDetail) {
-        fetchPokemonImage(from: pokemonDetails.sprites.other.home.frontDefault.absoluteString) { data in
-            print(" \(pokemonDetails.id) image")
-            let newPokemon = Pokemon(id: pokemonDetails.id, name: pokemonDetails.name, image: data, hp: pokemonDetails.stats[PokeConstants.hpIndex].baseStat, attack: pokemonDetails.stats[PokeConstants.attackIndex].baseStat, defense: pokemonDetails.stats[PokeConstants.defenseIndex].baseStat)
-            self.pokemons.append(newPokemon)
-            if (self.pokemons.count == self.pokemonCount) { // finished
-                self.pokemons = self.pokemons.sorted { $0.id < $1.id }
-                self.loading = false
-//                self.shouldFetch = false
-            }
         }
     }
     
-    func fetchPokemonImage(from url: String, completion: @escaping (_ :Data) -> Void) {
-        guard let url = URL(string: url) else {
-            print("url error")
-            return;
-        }
-        
-        URLSession.shared.dataTask(with: url) { data, res, err in
-            if let data = data {
-                DispatchQueue.main.async {
-                      completion(data)
-                }
-            }
-        }.resume()
+    func switchToNextSet() {
+        usePrevious = false
+        shouldChangeSet = false
+        previousPokemons = [];
     }
     
     func fetchNextSetOfPokemons() {
-//        loading = true; index = 0; frontIndex = 0; backIndex = 1
         self.previousPokemons = pokemons
         self.usePrevious = true
         pokemons = []
-        fetchPokemons()
+        createPokemons()
     }
-    
 }
 
 

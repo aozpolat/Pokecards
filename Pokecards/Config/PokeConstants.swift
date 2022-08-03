@@ -27,9 +27,9 @@ struct PokeConstants {
 
     static var cornerRadius: CGFloat = 50
     static var cardWidth: CGFloat = UIDevice.isIpad ?  600 : 300
-//    static var cardWidthIphone = 300
     static var cardHeight: CGFloat = 480
     static var imageSize: CGFloat = UIDevice.isIpad ? 300 : 200
+    static var indexOfFetchingNewSet = 15
     
     static var animationTime = 0.6
 }

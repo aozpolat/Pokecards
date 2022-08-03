@@ -13,9 +13,9 @@ class PokemonViewModel : ObservableObject{
     @Published var previousPokemons: [Pokemon] = []
     @Published var loading = true
     @Published var isFront = true
-    @Published var index = 0
-    @Published var frontIndex = 0
-    @Published var backIndex = 1
+    @Published var index = 0 //to switch between direction (Horizontal and vertical)
+    @Published var frontIndex = 0 //  index of the card at the front
+    @Published var backIndex = 1  //  index of the card at the back
     @Published var usePrevious = false
     
     private var pokeApiService = PokeApiService()
@@ -26,7 +26,7 @@ class PokemonViewModel : ObservableObject{
     private var url: String {
         nextUrl == nil ? PokeConstants.pokeApiUrl : nextUrl!.absoluteString
     }
-    let directions: [[(CGFloat, CGFloat, CGFloat)]] = [[(1,0,0.2),(1,0,0.1), (1,0,0)],[(0,-2,-0.1), (0,-2, -0.1),(0,-1,0)]]
+    let directions: [[(CGFloat, CGFloat, CGFloat)]] = [[(1,0,0.2),(1,0,0.1), (1,0,0)],[(0,-2,-0.1), (0,-2, -0.1),(0,-1,0)]] // they are like keyframes
     
     init () {
         createPokemons()
@@ -57,16 +57,20 @@ class PokemonViewModel : ObservableObject{
                 self.index = ( self.index + 1 ) % (self.directions.count)
             } else {
                 //do something after animation time to assure nice animations
+                //change cards on the screen. For example, if user sees a card at the front then change the card at the back by adding 2
+                // so, user can see smooth changes between pokemons.
                 Timer.scheduledTimer(withTimeInterval: PokeConstants.animationTime, repeats: false) { [weak self] _ in
                     guard let self = self else { return }
                     self.index = ( self.index + 1 ) % (self.directions.count)
                     if (!self.isFront) {
-                        self.shouldChangeSet = self.previousPokemons.count > 0 && ((self.frontIndex + 2) % self.previousPokemons.count ) == 0 // 20. pokemon is on the screen
+                        // if 20. pokemon is on the screen, set shoulChangeSet to true
+                        self.shouldChangeSet = self.previousPokemons.count > 0 && ((self.frontIndex + 2) % self.previousPokemons.count ) == 0
                         
                         self.frontIndex = self.usePrevious ? ( self.frontIndex + 2 ) % self.previousPokemons.count : ( self.frontIndex + 2 ) % self.pokemonCount!
                     } else {
-                        // 15. pokemon is on the screen, fetch the next set
-                        if (( self.backIndex + 2 ) % 15 == 0 && self.previousPokemons.isEmpty && self.nextUrl != nil ) {
+                        // If we reached to the index of fetching new set which is 15 at the moment
+                        // then 15. pokemon is on the screen, fetch the next set for better ux
+                        if (( self.backIndex + 2 ) % PokeConstants.indexOfFetchingNewSet == 0 && self.previousPokemons.isEmpty && self.nextUrl != nil ) {
                             self.fetchNextSetOfPokemons()
                         }
                         
@@ -94,10 +98,10 @@ extension PokemonViewModel {
     
     /*
      * First fetch general infos of pokemons, after that get details of them. Then, fetch their image data
-     * and use those details to create pokemons.
+     * and use those details and the image data to create pokemons.
      *
      * This function is running in a parallel way. So, I needed to sort pokemons after fetching operations is completed.
-     * It basically fetches everthing and create pokemon, after fetching everthing sort them.
+     * It basically fetches everthing and creates pokemon, after fetching everthing sorts them.
      */
     func createPokemons() {
         pokeApiService.fetchGeneric(from: self.url) { [weak self] (pokemonBaseInfos : PokemonBaseInfos) in

@@ -66,13 +66,11 @@
 			isa = PBXGroup;
 			children = (
 				4121AEB328946A3000A89121 /* PokecardsApp.swift */,
-				4121AEB528946A3000A89121 /* ContentView.swift */,
-				4132E165289687D70026567E /* FlippableCard.swift */,
-				4121AEC9289572A900A89121 /* PokeCardContentView.swift */,
-				4121AEC32895060500A89121 /* Pokemon.swift */,
-				4121AEC52895067D00A89121 /* PokemonViewModel.swift */,
-				41BAE1B72899842600EF60AC /* PokeApiService.swift */,
-				4132E161289684220026567E /* PokeConstants.swift */,
+				413A5F9F289A521600193D74 /* Views */,
+				413A5FA0289A52B700193D74 /* Model */,
+				413A5FA3289A54CB00193D74 /* ViewModel */,
+				413A5FA2289A53EB00193D74 /* Services */,
+				413A5FA1289A53CC00193D74 /* Config */,
 				4132E163289684C30026567E /* Extensions.swift */,
 				4121AEB728946A3200A89121 /* Assets.xcassets */,
 				4121AEB928946A3200A89121 /* Preview Content */,
@@ -86,6 +84,48 @@
 				4121AEBA28946A3200A89121 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		413A5F9F289A521600193D74 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				4132E165289687D70026567E /* FlippableCard.swift */,
+				4121AEB528946A3000A89121 /* ContentView.swift */,
+				4121AEC9289572A900A89121 /* PokeCardContentView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		413A5FA0289A52B700193D74 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				4121AEC32895060500A89121 /* Pokemon.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		413A5FA1289A53CC00193D74 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				4132E161289684220026567E /* PokeConstants.swift */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
+		413A5FA2289A53EB00193D74 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				41BAE1B72899842600EF60AC /* PokeApiService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		413A5FA3289A54CB00193D74 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				4121AEC52895067D00A89121 /* PokemonViewModel.swift */,
+			);
+			path = ViewModel;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

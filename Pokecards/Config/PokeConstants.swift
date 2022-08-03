@@ -21,8 +21,8 @@ struct PokeConstants {
     // UI
     
     static var refreshButtonColorLoading = Color(hex: 0xD1D1D6)
-    static var refreshButtonSize: CGFloat = UIDevice.isIpad ? 35 : 25
-    static var refreshButtonCircleSize: CGFloat = UIDevice.isIpad ? 70 : 50
+    static var refreshButtonSize: CGFloat = UIDevice.isIpad ? 45 : 25
+    static var refreshButtonCircleSize: CGFloat = UIDevice.isIpad ? 80 : 50
     static var backgroundColor = Color(hex: 0xAC9EFF) 
 
     static var cornerRadius: CGFloat = 50

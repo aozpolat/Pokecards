@@ -66,7 +66,7 @@ class PokemonViewModel : ObservableObject{
                         self.frontIndex = self.usePrevious ? ( self.frontIndex + 2 ) % self.previousPokemons.count : ( self.frontIndex + 2 ) % self.pokemonCount!
                     } else {
                         // 15. pokemon is on the screen, fetch the next set
-                        if (( self.backIndex + 2 ) % 19 == 0 && self.previousPokemons.isEmpty && self.nextUrl != nil ) {
+                        if (( self.backIndex + 2 ) % 15 == 0 && self.previousPokemons.isEmpty && self.nextUrl != nil ) {
                             self.fetchNextSetOfPokemons()
                         }
                         

@@ -104,13 +104,13 @@ extension PokemonViewModel {
      * It basically fetches everthing and creates pokemon, after fetching everthing sorts them.
      */
     func createPokemons() {
-        pokeApiService.fetchGeneric(from: self.url) { [weak self] (pokemonBaseInfos : PokemonBaseInfos) in
+        pokeApiService.fetch(from: self.url) { [weak self] (pokemonBaseInfos : PokemonBaseInfos) in
             guard let self = self else {return}
             
             self.pokemonCount = pokemonBaseInfos.results.count
             self.nextUrl = pokemonBaseInfos.next
             pokemonBaseInfos.results.forEach { pokemonBaseInfo in
-                self.pokeApiService.fetchGeneric(from:pokemonBaseInfo.url.absoluteString) { (pokemonDetails : PokemonDetail) in
+                self.pokeApiService.fetch(from:pokemonBaseInfo.url.absoluteString) { (pokemonDetails : PokemonDetail) in
 //                    print(pokemonDetails.id)
                     self.pokeApiService.fetchPokemonImage(from: pokemonDetails.sprites.other.home.frontDefault.absoluteString) { imageData in
 //                        print(" \(pokemonDetails.id) image")
